@@ -1,6 +1,9 @@
 const getState = ({ getStore, getActions, setStore }) => {
 	return {
 		store: {
+
+			user: null,
+
 			message: null,
 			demo: [
 				{
@@ -45,8 +48,101 @@ const getState = ({ getStore, getActions, setStore }) => {
 				});
 
 				//reset the global store
-				setStore({ demo: demo });
+				setStore({ demo: demo });		
+			},
+
+			userLogin: async(email, password) =>{
+				try{
+					// fetching data from the backend
+					const resp = await fetch(process.env.BACKEND_URL + "/api/login",{
+						method: "POST",
+						headers:{
+							"Content-type" : "application/json"
+						},
+						body: JSON.stringify({ email, password })
+						});
+
+						if (!resp.ok) {
+							throw new Error(data.msg || "Something's Wrong to login");
+						}
+						sessionStorage.setItem("accessToken", data.token);
+					const data = await resp.json();
+					setStore({ message: data.message })
+					// don't forget to return something, that is how the async resolves
+					return data;
+				}catch(error){
+					console.log("Something's Wrong to login", error)
+					throw error;
+				}
+			},
+
+			userRegister: async(email, password) =>{
+				try{
+					// fetching data from the backend
+					const resp = await fetch(process.env.BACKEND_URL + "/api/register",{
+						method: "POST",
+						headers:{
+							"Content-type" : "application/json"
+						},
+						body: JSON.stringify({ email, password })
+						});
+
+						if (!resp.ok) {
+							throw new Error(data.msg || "Something's Wrong to register");
+						}
+						sessionStorage.setItem("accessToken", data.token);
+					const data = await resp.json();
+					setStore({ message: data.message })
+					// don't forget to return something, that is how the async resolves
+					return data;
+				}catch(error){
+					console.log("Something's Wrong to register", error)
+					throw error;
+				}
+			},
+
+			userPrivate: async () =>{
+				try {
+					const token = sessionStorage.getItem("accessToken")
+					if (!token) {
+						throw new Error ("Access token missing.");
+					}
+					const resp = await fetch(process.env.BACKEND_URL + "/api/private", {
+						method : "GET",
+						headers: {
+							Authorization: `Bearer ${token}`
+						}
+					});
+
+					const data = await resp.json();
+
+					if(!resp.ok){
+						throw new Error(data.msg || "Something's Wrong with getting private data");
+					}
+
+					const {user} = getStore();
+
+					if(JSON.stringify(user) !== JSON.stringify(data)){
+						setStore({user: data});
+						console.log("User data has been updated on the storage.", data)
+					}
+				} catch (error) {
+					console.error("Something's Wrong with getting private data", error);
+					throw error;
+				}
+			},
+
+			userLogout: () => {
+				try {
+					sessionStorage.removeItem("accessToken");
+					setStore({ user: null });
+				} catch (error) {
+					console.error("Error to log out", error);
+					throw error;
+				}
 			}
+
+			
 		}
 	};
 };
