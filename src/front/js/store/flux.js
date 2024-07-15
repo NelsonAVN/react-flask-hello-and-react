@@ -90,7 +90,6 @@ const getState = ({ getStore, getActions, setStore }) => {
 						if (!resp.ok) {
 							throw new Error(data.msg || "Something's Wrong to register");
 						}
-						sessionStorage.setItem("accessToken", data.token);
 					const data = await resp.json();
 					setStore({ message: data.message })
 					// don't forget to return something, that is how the async resolves

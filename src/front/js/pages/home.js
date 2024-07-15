@@ -9,7 +9,7 @@ export const Home = () => {
         <div className="container-fluid py-5 text-center">
             <div className="row">
                 <div className="col-12">
-                    <h1>Bienvenido al sistema de registro de usuarios</h1>
+                    <h1>Welcome to the registration process</h1>
                 </div>
             </div>
             <div className="row mt-5">

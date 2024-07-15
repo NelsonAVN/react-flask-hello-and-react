@@ -55,7 +55,7 @@ export const Register = () => {
                     <button type="submit" className="btn btn-primary mb-3">Register</button>
                 </div>
             </form>
-            <Link to="/">Return to Home</Link>
+            <Link to="/">Back Home</Link>
         </div>
     );
 };
